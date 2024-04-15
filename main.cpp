@@ -1,62 +1,72 @@
-
-//  Created by Ayomide Isinkaye on 4/4/24.
-//
-
 #include <iostream>
 #include <vector>
 #include <string>
-
+#include <random>
 using namespace std;
 
-// Define a structure to represent a quiz question
-struct Question {
-    string questionText;
-    vector<string> options;
-    int correctOption;
+// defining a structure to represent a quiz question
+struct questions {
+  string questionText;
+  vector<string> options;
+  int correctOption;
 };
 
-// Function to display a question and its options
-void displayQuestion(const Question& q) {
-    cout << q.questionText << endl;
-    for (int i = 0; i < q.options.size(); ++i) {
-        cout << i + 1 << ". " << q.options[i] << endl;
-    }
+// displaying a question and its corresponding options
+void displayQuestion(const questions& q) {
+  cout << q.questionText << endl;
+  for (int i = 0; i < q.options.size(); ++i) {
+    cout << i + 1 << ". " << q.options[i] << endl;
+  }
 }
 
-// Function to check if the user's answer is correct
-bool isCorrectAnswer(const Question& q, int userAnswer) {
-    return userAnswer == q.correctOption;
+// checking if the user's answer is correct
+bool isCorrectAnswer(const questions& q, int userAnswer) {
+  return userAnswer == q.correctOption;
 }
 
 int main() {
-    // Define quiz questions
-    vector<Question> quiz = {
-        {"When was Huston-Tillotson founded?", {"1875", "1715", "1934", "1650"}, 1},
-        {"What is the largest planet in our solar system?", {"Mercury", "Venus", "Jupiter", "Mars"}, 3},
-        {"Who wrote 'Romeo and Juliet'?", {"William Shakespeare", "Charles Dickens", "Jane Austen", "Mark Twain"}, 1},
-        {"Who i sthe current president/CEO of Huston-Tillotson University?", {"Dr. Melvis X. Williams", "Dr. Melvin K. Wales", "Dr. Melva K. Wallace", "Dr. Zelda K. Wallace"}, 3},
-        {"How many seasons does the United States have each year?", {"5", "4", "2", "3"}, 2},
-    };
+  //quiz questions!! and options too
+  vector<questions> quiz = {
+    {"When was Huston-Tillotson founded?", {"1875", "1715", "1934", "1650"}, 1},
+    {"What is the largest planet in our solar system?", {"Mercury", "Venus", "Jupiter", "Mars"}, 3},
+    {"Who wrote 'Romeo and Juliet'?", {"William Shakespeare", "Charles Dickens", "Jane Austen", "Mark Twain"}, 1},
+    {"Who is the current president/CEO of Huston-Tillotson University?", {"Dr. Melvis X. Williams", "Dr. Melvin K. Wales", "Dr. Melva K. Wallace", "Dr. Zelda K. Wallace"}, 3},
+    {"How many seasons does the United States have each year?", {"5", "4", "2", "3"}, 2},
+  };
 
-    // Display each question and get user's answers
-    int score = 0;
-    for (const Question& q : quiz) {
-        displayQuestion(q);
-        cout << "Enter the answer of your choice(1-" << q.options.size() << "): ";
-        int userAnswer;
-        cin >> userAnswer;
-        if (isCorrectAnswer(q, userAnswer)) {
-            cout << "Correct!" << endl;
-            score++;
-        } else {
-            cout << "Incorrect. The correct answer is: " << q.options[q.correctOption - 1] << endl;
-        }
-        cout << endl;
+  // getting user input for the number of questions they want to get quizzed on
+  int numQuestions;
+  do {
+    cout << "Enter the number of questions you want to answer (1-" << quiz.size() << "): ";
+    cin >> numQuestions;
+  } while (numQuestions < 1 || numQuestions > quiz.size());
+
+  //seedingthe random number generator (optional)
+  srand(time(0));
+
+  //shuffling the questions in the quiz vector
+  random_device rd;
+  mt19937 g(rd());
+  shuffle(quiz.begin(), quiz.end(), g);
+
+  //displaying each question and getting user's answers
+  int score = 0;
+  for (int i = 0; i < numQuestions; ++i) {
+    displayQuestion(quiz[i]);
+    cout << "Enter the answer of your choice(1-" << quiz[i].options.size() << "): ";
+    int userAnswer;
+    cin >> userAnswer;
+    if (isCorrectAnswer(quiz[i], userAnswer)) {
+      cout << "Correct!" << endl;
+      score++;
+    } else {
+      cout << "Incorrect. The correct answer is: " << quiz[i].options[quiz[i].correctOption - 1] << endl;
     }
+    cout << endl;
+  }
 
-    // Display final score
-    cout << "Quiz completed. Your score: " << score << "/" << quiz.size() << endl;
+  //displaying final score based on answered questions
+  cout << "Quiz completed. Your score: " << score << "/" << numQuestions << endl;
 
-    return 0;
+  return 0;
 }
-
